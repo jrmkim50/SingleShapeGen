@@ -308,7 +308,7 @@ class SSGmodelBase(ABC):
     def _set_real_data(self, real_data_list: list):
         """set a list of multi-scale 3D shapes for training"""
         print("real data dimensions: ", [x.shape for x in real_data_list])
-        self.real_list = [torch.tensor(x, dtype=torch.float32, device=self.device).unsqueeze(0).unsqueeze(0) for x in real_data_list]
+        self.real_list = [torch.tensor(x, dtype=torch.float32, device=self.device) for x in real_data_list]
         self.real_sizes = [x.shape[-3:] for x in self.real_list]
 
     def _compute_noise_sigma(self, scale: int):
