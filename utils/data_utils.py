@@ -39,7 +39,7 @@ def load_data_fromNifti(path: str, cfg):
     real = np.transpose(real, (0,4,1,2,3)) # [1,c,x,y,z]
     for i in range(0,cfg.n_scales):
         scale = math.pow(cfg.factor,cfg.n_scales-i)
-        curr_real = zoom(real, scale)
+        curr_real = zoom(real, (1,1,scale,scale,scale))
         shape_list.append(norm(curr_real))
     return shape_list
 
