@@ -81,8 +81,8 @@ class Config(object):
         """arguments for data"""
         group = parser.add_argument_group('data')
         group.add_argument('-s', '--src_path', type=str, default=None, help='path to reference data')
-        group.add_argument('--n_scales', type=int, default=6, help='Number of downsampling scales')
-        group.add_argument('--factor', type=float, default=0.75, help='downsampling factor')
+        group.add_argument('--scale_factor',type=float,help='downsample scale factor',default=0.75)
+        group.add_argument('--min_size',type=float,help='min image size',default=25)
 
     def _add_network_config(self, parser):
         """arguments for network structure"""
