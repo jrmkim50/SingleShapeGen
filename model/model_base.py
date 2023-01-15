@@ -9,11 +9,12 @@ from tensorboardX import SummaryWriter
 import numpy as np
 from .networks import get_network
 from .model_utils import calc_gradient_penalty, set_require_grads, slice_volume_along_xyz, TrainClock
-
+from PIL import Image
 
 class SSGmodelBase(ABC):
     """Base class for single shape generative model"""
     def __init__(self, config):
+        self.img_dir = config.img_dir
         self.log_dir = config.log_dir
         self.model_dir = config.model_dir
         self.clock = TrainClock()
@@ -341,13 +342,17 @@ class SSGmodelBase(ABC):
         """write 3D volume slices on tensorboard for quick visualization"""
         if self.clock.step == 0:
             real_data_ = real_data.detach().cpu().numpy()[0, 0]
-            self.train_tb.add_image('real', slice_volume_along_xyz(real_data_), self.clock.step, dataformats='HW')
+            im = Image.fromarray(slice_volume_along_xyz(real_data_))
+            im.save(os.path.join(self.img_dir, f"{self.clock.step}_real.png"))
 
         with torch.no_grad():
             fake1_ = self.generate('rand', self.scale)
             rec_ = self.generate('rec', self.scale)
 
         fake1_ = fake1_.detach().cpu().numpy()[0, 0]
-        self.train_tb.add_image('fake1', slice_volume_along_xyz(fake1_), self.clock.step, dataformats='HW')
+        im = Image.fromarray(slice_volume_along_xyz(fake1_))
+        im.save(os.path.join(self.img_dir, f"{self.clock.step}_fake1.png"))
+        
         rec_ = rec_.detach().cpu().numpy()[0, 0]
-        self.train_tb.add_image('rec', slice_volume_along_xyz(rec_), self.clock.step, dataformats='HW')
+        im = Image.fromarray(slice_volume_along_xyz(rec_))
+        im.save(os.path.join(self.img_dir, f"{self.clock.step}_rec.png"))
