@@ -343,7 +343,7 @@ class SSGmodelBase(ABC):
         if self.clock.step == 0:
             real_data_ = real_data.detach().cpu().numpy()[0, 0]
             im = Image.fromarray(slice_volume_along_xyz(real_data_))
-            im.save(os.path.join(self.img_dir, f"{self.clock.step}_real.png"))
+            im.save(os.path.join(self.img_dir, f"{self.scale}_{self.clock.step}_real.png"))
 
         with torch.no_grad():
             fake1_ = self.generate('rand', self.scale)
@@ -351,8 +351,8 @@ class SSGmodelBase(ABC):
 
         fake1_ = fake1_.detach().cpu().numpy()[0, 0]
         im = Image.fromarray(slice_volume_along_xyz(fake1_))
-        im.save(os.path.join(self.img_dir, f"{self.clock.step}_fake1.png"))
+        im.save(os.path.join(self.img_dir, f"{self.scale}_{self.clock.step}_fake1.png"))
         
         rec_ = rec_.detach().cpu().numpy()[0, 0]
         im = Image.fromarray(slice_volume_along_xyz(rec_))
-        im.save(os.path.join(self.img_dir, f"{self.clock.step}_rec.png"))
+        im.save(os.path.join(self.img_dir, f"{self.scale}_{self.clock.step}_rec.png"))

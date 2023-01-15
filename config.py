@@ -18,7 +18,7 @@ class Config(object):
 
         # experiment paths
         self.exp_dir = os.path.join(self.proj_dir, self.tag)
-        self.img_dir = os.path.join(self.tag, 'imgs')
+        self.img_dir = os.path.join('imgs', self.tag)
         self.log_dir = os.path.join(self.exp_dir, 'log')
         self.model_dir = os.path.join(self.exp_dir, 'model')
 
