@@ -131,10 +131,12 @@ class SSGmodelConv3D(SSGmodelBase):
             else:
                 noise_shape = self.real_sizes[i]
                 if mode == "rec":
+                    # JEREMY TODO: perhaps I should use multichannel noise?
                     noise = torch.zeros((1, 1, *noise_shape), device=self.device)
                 else:
                     if resize_factor != (1.0, 1.0, 1.0):
                         noise_shape = [round(noise_shape[j] * resize_factor[j]) for j in range(3)]
+                    # JEREMY TODO: perhaps I should use multichannel noise?
                     noise = generate_3d_noise(*noise_shape, self.noiseAmp_list[i], self.device)
             noises_list.append(noise)
         return noises_list

@@ -60,6 +60,7 @@ def generate_tri_plane_noise(res_x: int, res_y: int, res_z: int, nf: int, noise_
 
 def generate_3d_noise(res_x: int, res_y: int, res_z: int, noise_amp: float, device: torch.device):
     """generate a tuple of added 3D noise."""
+    # JEREMY TODO: perhaps I should use multichannel noise?
     noise = (torch.randn(1, 1, res_x, res_y, res_z, device=device) * noise_amp).detach()
     return noise
 
