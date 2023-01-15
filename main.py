@@ -20,7 +20,8 @@ def main():
             ssg_model.scale += 1
 
         # load training data
-        real_data_list = load_data_fromH5(cfg.src_path)
+        # real_data_list = load_data_fromH5(cfg.src_path)
+        real_data_list = load_data_fromNifti(cfg.src_path, cfg)
 
         # start training
         ssg_model.train(real_data_list)

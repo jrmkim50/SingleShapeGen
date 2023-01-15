@@ -5,7 +5,43 @@ import trimesh
 from trimesh.smoothing import filter_laplacian
 from mcubes import marching_cubes
 from skimage import morphology
+import nibabel as nib
+import math
+from scipy.ndimage import zoom
 
+def adjust_dynamic_range(data, drange_in, drange_out):
+    if drange_in != drange_out:
+        scale = (drange_out[1] - drange_out[0]) / (drange_in[1] - drange_in[0])
+        bias = (drange_out[0] - drange_in[0] * scale)
+        data = data * scale + bias
+    return data
+
+def denorm(x):
+    return adjust_dynamic_range(x, [-1,1],[0,1])
+
+def norm(x):
+    return adjust_dynamic_range(x, [0,1],[-1,1])
+
+def load_data_fromNifti(path: str, cfg):
+    """load multi-scale 3D shape data from h5 file
+
+    Args:
+        path (str): file path
+        smooth (bool, optional): use gaussian blur. Defaults to True.
+        only_finest (bool, optional): load only the finest(highest scale) shape. Defaults to False.
+
+    Returns:
+        np.ndarray or list[np.ndarray]: 3D shape(s)
+    """
+    shape_list = []
+    real = nib.load(path).get_fdata()[None] # [1,x,y,z,c]
+    real[:,:,:,:,0] /= 0.172 # place ct in [0 - 1 range]
+    real = np.transpose(real, (0,4,1,2,3)) # [1,c,x,y,z]
+    for i in range(0,cfg.n_scales):
+        scale = math.pow(cfg.factor,cfg.n_scales-i)
+        curr_real = zoom(real, scale)
+        shape_list.append(norm(curr_real))
+    return shape_list
 
 def load_data_fromH5(path: str, smooth=True, only_finest=False):
     """load multi-scale 3D shape data from h5 file
