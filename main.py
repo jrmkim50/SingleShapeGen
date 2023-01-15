@@ -3,7 +3,7 @@ import torch
 from tqdm import tqdm
 from config import Config
 from model import get_model, SSGmodelBase
-from utils.data_utils import load_data_fromH5, save_h5_single
+from utils.data_utils import load_data_fromNifti, save_h5_single
 
 
 def main():
@@ -20,7 +20,6 @@ def main():
             ssg_model.scale += 1
 
         # load training data
-        # real_data_list = load_data_fromH5(cfg.src_path)
         real_data_list = load_data_fromNifti(cfg.src_path, cfg)
 
         # start training
