@@ -19,17 +19,17 @@ def get_network(config, name):
             return GrowingGeneratorTriplane(config.G_nc, config.G_layers, config.pool_dim, 
                 config.feat_dim, config.use_norm, config.mlp_dim, config.mlp_layers)
         elif config.G_struct == "conv3d":
-            return GrowingGenerator3D(config.G_nc, config.G_layers, config.use_norm)
+            return GrowingGenerator3D(2, 2, config.G_nc, config.G_layers, config.use_norm)
         else:
             raise NotImplementedError
     elif name == "D":
-        return WDiscriminator(config.D_nc, config.D_layers, config.use_norm)
+        return WDiscriminator(2, config.D_nc, config.D_layers, config.use_norm)
     else:
         raise NotImplementedError
 
 
 class WDiscriminator(nn.Module):
-    def __init__(self, n_channels=32, n_layers=3, use_norm=True):
+    def __init__(self, in_channels, n_channels=32, n_layers=3, use_norm=True):
         """A 3D convolutional discriminator. 
             Each layer's kernel size, stride and padding size are fixed.
 
@@ -40,7 +40,7 @@ class WDiscriminator(nn.Module):
         """
         super(WDiscriminator, self).__init__()
         ker_size, stride, pad = 3, 2, 1 # hard-coded
-        self.head = ConvBlock(1, n_channels, ker_size, stride, pad, use_norm, sdim='3d')
+        self.head = ConvBlock(in_channels, n_channels, ker_size, stride, pad, use_norm, sdim='3d')
 
         self.body = nn.Sequential()
         for i in range(n_layers - 2):
@@ -215,7 +215,7 @@ class GrowingGeneratorTriplane(nn.Module):
 
 
 class GrowingGenerator3D(nn.Module):
-    def __init__(self, n_channels=32, n_layers=4, use_norm=True, pad_head=False):
+    def __init__(self, in_channels, out_channels, n_channels=32, n_layers=4, use_norm=True, pad_head=False):
         """A multi-scale generator on tri-plane representation.
 
         Args:
@@ -229,6 +229,8 @@ class GrowingGenerator3D(nn.Module):
         self.n_conv_layers = n_layers
         self.use_norm = use_norm
         self.pad_len = 0 if pad_head else 1
+        self.in_channels = in_channels
+        self.out_channels = out_channels
         
         self.body = nn.ModuleList([])
 
@@ -239,7 +241,7 @@ class GrowingGenerator3D(nn.Module):
 
     def init_next_scale(self):
         """initialize next scale, i.e., append a conv block"""
-        model = Convs3DSkipAdd(self.nf, self.n_conv_layers, 3, 1, self.use_norm)
+        model = Convs3DSkipAdd(self.in_channels, self.out_channels, self.nf, self.n_conv_layers, 3, 1, self.use_norm)
         self.body.append(model)
 
     def forward(self, inp: torch.Tensor, noises_list: list, start_scale=0, end_scale=-1, return_each=False):

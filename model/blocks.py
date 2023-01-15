@@ -137,7 +137,7 @@ class TriplaneConvs(nn.Module):
 
 
 class Convs3DSkipAdd(nn.Module):
-    def __init__(self, n_channels=32, n_layers=4, ker_size=3, stride=1, use_norm=True, pad_head=False):
+    def __init__(self, in_channels, out_channels, n_channels=32, n_layers=4, ker_size=3, stride=1, use_norm=True, pad_head=False):
         """A sequence of 3D convolutions with skip connection.
 
         Args:
@@ -152,13 +152,13 @@ class Convs3DSkipAdd(nn.Module):
         pad_len = 0 if pad_head else 1
         self.pad_head = pad_head
 
-        self.head = ConvBlock(1, n_channels, ker_size, stride, pad_len, use_norm) #GenConvTransBlock(opt.nc_z,N,opt.ker_size,opt.padd_size,opt.stride)
+        self.head = ConvBlock(in_channels, n_channels, ker_size, stride, pad_len, use_norm) #GenConvTransBlock(opt.nc_z,N,opt.ker_size,opt.padd_size,opt.stride)
         self.body = nn.Sequential()
         for i in range(n_layers - 2):
             block = ConvBlock(n_channels, n_channels, ker_size, stride, pad_len, use_norm)
             self.body.add_module('block%d' % (i + 1), block)
         self.tail = nn.Sequential(
-            nn.Conv3d(n_channels, 1, kernel_size=ker_size, stride=stride, padding=pad_len),
+            nn.Conv3d(n_channels, out_channels, kernel_size=ker_size, stride=stride, padding=pad_len),
             nn.Tanh()
         )
 
