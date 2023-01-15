@@ -94,11 +94,11 @@ def make_coord(H: int, W: int, D: int, device: torch.Tensor, normalize=True):
 def slice_volume_along_xyz(volume: np.ndarray):
     """slice a 3D volume along the mid point of each axis"""
     img1 = volume[volume.shape[0] // 2]
-    img1 = adjust_dynamic_range(img1, [img1.min(), img1.max()], [0, 255]).astype(int)
+    img1 = adjust_dynamic_range(img1, [img1.min(), img1.max()], [0, 255]).astype(np.uint8)
     img2 = volume[:, volume.shape[1] // 2]
-    img2 = adjust_dynamic_range(img2, [img2.min(), img2.max()], [0, 255]).astype(int)
+    img2 = adjust_dynamic_range(img2, [img2.min(), img2.max()], [0, 255]).astype(np.uint8)
     img3 = volume[:, :, volume.shape[2] // 2]
-    img3 = adjust_dynamic_range(img3, [img3.min(), img3.max()], [0, 255]).astype(int)
+    img3 = adjust_dynamic_range(img3, [img3.min(), img3.max()], [0, 255]).astype(np.uint8)
     _max = max(img1.shape[0], img2.shape[0], img3.shape[0])
 
     img1 = np.pad(img1, [(0, _max - img1.shape[0]), (1, 1)])
