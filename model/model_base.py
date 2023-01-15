@@ -229,9 +229,9 @@ class SSGmodelBase(ABC):
     def _record_losses(self):
         """record loss values on tensorboard"""
         avg_loss = {k: np.mean(v) for k, v in self.losses.items()}
-        self.train_tb.add_scalars("loss", avg_loss, global_step=self.clock.step)
+        # self.train_tb.add_scalars("loss", avg_loss, global_step=self.clock.step)
         Wasserstein_D = np.mean([-self.losses['D_r'][i] - self.losses['D_f'][i] for i in range(len(self.losses['D_r']))])
-        self.train_tb.add_scalar("wasserstein distance", Wasserstein_D, global_step=self.clock.step)
+        # self.train_tb.add_scalar("wasserstein distance", Wasserstein_D, global_step=self.clock.step)
         return avg_loss
     
     def _updateStep(self, real_data: torch.Tensor):
@@ -290,7 +290,7 @@ class SSGmodelBase(ABC):
             assert self.netG.n_scales == s + 1
 
             self._set_optimizer()
-            self._set_tbwriter()
+            # self._set_tbwriter()
             self.clock.reset()
             
             # draw fixed noise for reconstruction
