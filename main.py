@@ -5,8 +5,6 @@ from config import Config
 from model import get_model, SSGmodelBase
 from utils.data_utils import load_data_fromNifti
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "4"
-
 def main():
     # create experiment config by parsing cmd-line arguments
     cfg = Config()
