@@ -43,6 +43,7 @@ class Config(object):
             shutil.rmtree(self.exp_dir)
         os.makedirs(self.log_dir, exist_ok=True)
         os.makedirs(self.model_dir, exist_ok=True)
+        os.makedirs(self.img_dir, exist_ok=True)
 
         # save this configuration
         if self.is_train:
