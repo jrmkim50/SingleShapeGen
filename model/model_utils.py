@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from utils.data_utils import adjust_dynamic_range
 
 
 def calc_gradient_penalty(netD, real_data: torch.Tensor, fake_data: torch.Tensor, device: torch.device):
@@ -93,8 +94,11 @@ def make_coord(H: int, W: int, D: int, device: torch.Tensor, normalize=True):
 def slice_volume_along_xyz(volume: np.ndarray):
     """slice a 3D volume along the mid point of each axis"""
     img1 = volume[volume.shape[0] // 2]
+    img1 = adjust_dynamic_range(img1, [img1.min(), img1.max()], [0, 255]).astype(int)
     img2 = volume[:, volume.shape[1] // 2]
+    img2 = adjust_dynamic_range(img2, [img2.min(), img2.max()], [0, 255]).astype(int)
     img3 = volume[:, :, volume.shape[2] // 2]
+    img3 = adjust_dynamic_range(img3, [img3.min(), img3.max()], [0, 255]).astype(int)
     _max = max(img1.shape[0], img2.shape[0], img3.shape[0])
 
     img1 = np.pad(img1, [(0, _max - img1.shape[0]), (1, 1)])
