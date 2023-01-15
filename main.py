@@ -10,6 +10,8 @@ def main():
     # create experiment config by parsing cmd-line arguments
     cfg = Config()
 
+    print(cfg)
+
     # create model
     ssg_model = get_model(cfg)
 
