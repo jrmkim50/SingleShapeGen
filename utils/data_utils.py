@@ -4,7 +4,7 @@ from skimage import morphology
 import nibabel as nib
 import math
 from scipy.ndimage import zoom
-from imresize import imresize_in
+from utils.imresize import imresize_in
 
 def adjust_dynamic_range(data, drange_in, drange_out):
     if drange_in != drange_out:
