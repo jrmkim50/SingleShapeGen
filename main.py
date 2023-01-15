@@ -3,7 +3,7 @@ import torch
 from tqdm import tqdm
 from config import Config
 from model import get_model, SSGmodelBase
-from utils.data_utils import load_data_fromNifti, save_h5_single
+from utils.data_utils import load_data_fromNifti
 
 
 def main():
